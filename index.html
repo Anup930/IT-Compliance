@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IT Compliance Portal — Gretex</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    /* ─── Design Tokens ─── */
+    :root {
+      --navy:      #0D1B2A;
+      --navy-mid:  #162235;
+      --navy-card: #1C2D42;
+      --blue:      #1E6FD9;
+      --blue-light:#2E85F5;
+      --accent:    #00D4A8;
+      --accent-dim:#00D4A820;
+      --warn:      #F59E0B;
+      --danger:    #EF4444;
+      --success:   #10B981;
+      --text:      #E8EDF4;
+      --text-dim:  #7A90A8;
+      --border:    #263548;
+      --radius:    10px;
+      --shadow:    0 4px 24px rgba(0,0,0,0.35);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ─── Login Screen ─── */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0D1B2A 0%, #0f2744 60%, #0a1a2e 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    #login-screen::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #1E6FD920 0%, transparent 70%);
+      top: -100px; right: -150px;
+      pointer-events: none;
+    }
+    #login-screen::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #00D4A810 0%, transparent 70%);
+      bottom: -80px; left: -100px;
+      pointer-events: none;
+    }
+
+    .login-card {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow);
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .login-logo .icon {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--blue), var(--accent));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .login-logo .brand { font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+    .login-logo .brand span { color: var(--accent); }
+
+    .login-card h2 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+    .login-card p.sub { color: var(--text-dim); font-size: 13px; margin-bottom: 28px; }
+
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .form-group input {
+      width: 100%;
+      background: var(--navy-mid);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus { border-color: var(--blue); }
+
+    .btn-primary {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--blue), #1558b0);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      margin-top: 4px;
+    }
+    .btn-primary:hover { opacity: 0.92; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .login-error {
+      background: #EF444418;
+      border: 1px solid #EF444440;
+      color: #FCA5A5;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-top: 14px;
+      display: none;
+    }
+
+    /* ─── App Shell ─── */
+    #app-screen { display: none; min-height: 100vh; flex-direction: column; }
+
+    .topbar {
+      background: var(--navy-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; }
+    .topbar-logo .icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--blue), var(--accent)); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .topbar-logo span { color: var(--accent); }
+
+    .topbar-right { display: flex; align-items: center; gap: 16px; }
+    .user-pill {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--navy-mid); border: 1px solid var(--border);
+      border-radius: 50px; padding: 6px 14px 6px 8px;
+    }
+    .user-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+    }
+    .user-name { font-size: 13px; font-weight: 500; }
+    .btn-logout {
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text-dim); padding: 6px 14px; border-radius: 8px;
+      font-size: 13px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ─── Main Content ─── */
+    .main-content { flex: 1; padding: 32px 28px; max-width: 1100px; margin: 0 auto; width: 100%; }
+
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .page-header p { color: var(--text-dim); font-size: 14px; }
+
+    /* ─── Stats Row ─── */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card {
+      background: var(--navy-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+    }
+    .stat-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); margin-bottom: 8px; }
+    .stat-card .value { font-size: 28px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+    .stat-card .value.green { color: var(--success); }
+    .stat-card .value.orange { color: var(--warn); }
+    .stat-card .value.blue { color: var(--blue-light); }
+
+    /* ─── Machine Cards ─── */
+    .section-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-dim); font-weight: 600; margin-bottom: 14px; }
+
+    .machine-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+
+    .machine-card {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .machine-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+    .machine-card.completed { border-color: var(--success); }
+    .machine-card.completed:hover { border-color: var(--success); transform: none; }
+
+    .machine-header {
+      padding: 16px 18px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .machine-info { display: flex; align-items: center; gap: 12px; }
+    .machine-icon {
+      width: 38px; height: 38px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .machine-icon.laptop { background: #1E6FD920; }
+    .machine-icon.server { background: #00D4A820; }
+    .machine-icon.desktop { background: #F59E0B20; }
+
+    .machine-name { font-size: 15px; font-weight: 600; }
+    .machine-type { font-size: 12px; color: var(--text-dim); margin-top: 1px; }
+
+    .badge {
+      font-size: 11px; font-weight: 600; padding: 4px 10px;
+      border-radius: 50px; text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .badge.done { background: #10B98120; color: var(--success); border: 1px solid #10B98140; }
+    .badge.pending { background: #F59E0B20; color: var(--warn); border: 1px solid #F59E0B40; }
+
+    .machine-folders { padding: 14px 18px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .folder-chip {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; padding: 5px 10px; border-radius: 6px;
+      background: var(--navy-mid); border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+    .folder-chip.required { color: var(--text); border-color: var(--blue); background: #1E6FD910; }
+    .folder-chip.submitted { color: var(--success); border-color: #10B98140; background: #10B98110; }
+
+    .machine-action { padding: 14px 18px; border-top: 1px solid var(--border); }
+    .btn-comply {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(135deg, var(--blue), #1558b0);
+      color: #fff; border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-comply:hover { opacity: 0.88; }
+
+    .completed-note {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--success); font-weight: 500;
+    }
+
+    /* ─── Modal ─── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.65);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%; max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+    }
+    .modal-header {
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; background: var(--navy-card); z-index: 1;
+    }
+    .modal-header h3 { font-size: 17px; font-weight: 600; }
+    .modal-header .meta { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+    .modal-close {
+      background: none; border: none; color: var(--text-dim);
+      font-size: 22px; cursor: pointer; line-height: 1;
+      padding: 4px 8px; border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .modal-close:hover { color: var(--text); background: var(--navy-mid); }
+
+    .modal-body { padding: 22px 24px; }
+
+    .folder-section { margin-bottom: 26px; }
+    .folder-section-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600; margin-bottom: 12px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    }
+    .folder-section-title .icon { font-size: 16px; }
+
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+    .upload-zone:hover, .upload-zone.dragover { border-color: var(--blue); background: #1E6FD908; }
+    .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-zone .upload-icon { font-size: 28px; margin-bottom: 8px; }
+    .upload-zone .upload-text { font-size: 13px; color: var(--text-dim); }
+    .upload-zone .upload-text strong { color: var(--blue-light); }
+
+    .preview-list { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .preview-thumb {
+      position: relative; width: 72px; height: 72px;
+      border-radius: 8px; overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .preview-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .preview-thumb .remove-btn {
+      position: absolute; top: 3px; right: 3px;
+      background: rgba(0,0,0,0.7); color: #fff;
+      border: none; border-radius: 50%;
+      width: 18px; height: 18px;
+      font-size: 11px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      line-height: 1;
+    }
+
+    .submitted-files { margin-top: 10px; }
+    .submitted-file {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--success);
+      padding: 6px 0; border-bottom: 1px solid var(--border);
+    }
+    .submitted-file:last-child { border-bottom: none; }
+    .submitted-file a { color: var(--success); text-decoration: none; }
+    .submitted-file a:hover { text-decoration: underline; }
+
+    .modal-footer {
+      padding: 18px 24px;
+      border-top: 1px solid var(--border);
+      display: flex; gap: 12px; justify-content: flex-end;
+    }
+    .btn-cancel {
+      padding: 10px 20px;
+      background: transparent; border: 1px solid var(--border);
+      color: var(--text-dim); border-radius: 8px;
+      font-size: 14px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-cancel:hover { border-color: var(--text-dim); color: var(--text); }
+    .btn-submit {
+      padding: 10px 24px;
+      background: linear-gradient(135deg, var(--accent), #00a884);
+      color: var(--navy); border: none; border-radius: 8px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.88; }
+    .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ─── Progress Bar ─── */
+    .progress-bar-wrap { background: var(--border); border-radius: 50px; height: 6px; margin: 8px 0 20px; }
+    .progress-bar-fill { height: 100%; border-radius: 50px; background: linear-gradient(90deg, var(--blue), var(--accent)); transition: width 0.4s; }
+
+    /* ─── Loader ─── */
+    .loader-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(13,27,42,0.85);
+      display: none; align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px;
+    }
+    .loader-overlay.show { display: flex; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-text { font-size: 14px; color: var(--text-dim); }
+
+    /* ─── Toast ─── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--navy-card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 18px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; box-shadow: var(--shadow);
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.3s; z-index: 400;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-color: var(--success); }
+    .toast.error { border-color: var(--danger); }
+
+    /* ─── Empty / Loading States ─── */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text-dim); }
+    .empty-state .icon { font-size: 48px; margin-bottom: 14px; }
+    .empty-state p { font-size: 15px; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 640px) {
+      .stats-row { grid-template-columns: 1fr; }
+      .main-content { padding: 20px 16px; }
+      .topbar { padding: 0 16px; }
+      .login-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ LOGIN SCREEN ═══════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">🛡️</div>
+      <div class="brand">Gretex <span>Compliance</span></div>
+    </div>
+    <h2>Employee Sign In</h2>
+    <p class="sub">Login with your Employee ID, User ID, or Email to continue.</p>
+
+    <div class="form-group">
+      <label>Employee ID / User ID / Email</label>
+      <input type="text" id="login-id" placeholder="e.g. G1302 or 1302 or name@gretex.com" autocomplete="username"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="Enter your password" autocomplete="current-password"/>
+    </div>
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ APP SCREEN ═══════════════════════════ -->
+<div id="app-screen" style="display:none; flex-direction:column; min-height:100vh;">
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo">
+        <div class="icon">🛡️</div>
+        Gretex <span style="color:var(--accent);margin-left:4px;">Compliance</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="user-pill">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <span class="user-name" id="user-name-display">—</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="page-header">
+      <h1>IT Compliance Dashboard</h1>
+      <p id="welcome-msg">Complete your system compliance by uploading screenshots for each required folder.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="label">Total Systems</div>
+        <div class="value blue" id="stat-total">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Completed</div>
+        <div class="value green" id="stat-done">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Pending</div>
+        <div class="value orange" id="stat-pending">—</div>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+    </div>
+
+    <div class="section-title">Your Assigned Systems</div>
+    <div class="machine-grid" id="machine-grid">
+      <div class="empty-state"><div class="icon">⏳</div><p>Loading your systems...</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ COMPLIANCE MODAL ═══════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <h3 id="modal-title">System Compliance</h3>
+        <div class="meta" id="modal-meta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <!-- Dynamically filled -->
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit" id="btn-submit" onclick="submitCompliance()">Submit Compliance</button>
+    </div>
+  </div>
+</div>
+
+<!-- Loader -->
+<div class="loader-overlay" id="loader">
+  <div class="spinner"></div>
+  <div class="loader-text" id="loader-text">Processing...</div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// CONFIG — replace with your deployed Apps Script URL
+// ════════════════════════════════════════════════════════
+const API_URL = 'https://script.google.com/macros/s/AKfycbz5_C0UhXLYKAFcKtIybRWzHmDj1LoC48L2E7NVI2e84Sgx31_tyJ6JOl5nz50zP8kG/exec';
+
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let currentUser  = null;   // { empId, userId, name, email }
+let requirements = [];     // array of req rows for current user
+let compliance   = [];     // already submitted entries
+let currentMachine = null; // machine being complied
+
+const FOLDER_MAP = {
+  'Desktop Folder':    { icon: '🖥️', key: 'Desktop Folder' },
+  'Downloads folder':  { icon: '📥', key: 'Downloads folder' },
+  'Documents folder':  { icon: '📁', key: 'Documents folder' },
+  'Email Inbox':       { icon: '📧', key: 'Email Inbox' }
+};
+
+const TYPE_ICON = { Laptop: '💻', Server: '🖧', Desktop: '🖥️' };
+
+// ════════════════════════════════════════════════════════
+// UTILITIES
+// ════════════════════════════════════════════════════════
+function showLoader(text = 'Processing...') {
+  document.getElementById('loader-text').textContent = text;
+  document.getElementById('loader').classList.add('show');
+}
+function hideLoader() { document.getElementById('loader').classList.remove('show'); }
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = (type === 'success' ? '✅ ' : '❌ ') + msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function showError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+async function apiFetch(action, payload = {}) {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    // 'text/plain' browser preflight CORS error ko bypass karta hai
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+    body: JSON.stringify({ action, ...payload })
+  });
+  return res.json();
+}
+
+// ════════════════════════════════════════════════════════
+// LOGIN
+// ════════════════════════════════════════════════════════
+document.getElementById('login-pass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+async function doLogin() {
+  const id   = document.getElementById('login-id').value.trim();
+  const pass = document.getElementById('login-pass').value.trim();
+  if (!id || !pass) { showError('Please enter your ID and password.'); return; }
+
+  document.getElementById('login-error').style.display = 'none';
+  showLoader('Authenticating...');
+
+  try {
+    const resp = await apiFetch('login', { identifier: id, password: pass });
+    hideLoader();
+    if (resp.success) {
+      currentUser = resp.user;
+      enterApp();
+    } else {
+      showError(resp.message || 'Invalid credentials. Please try again.');
+    }
+  } catch (e) {
+    hideLoader();
+    showError('Cannot reach server. Check your connection.');
+  }
+}
+
+function enterApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display   = 'flex';
+  document.getElementById('user-name-display').textContent = currentUser.name;
+  document.getElementById('user-avatar').textContent = currentUser.name[0].toUpperCase();
+  document.getElementById('welcome-msg').textContent =
+    `Welcome, ${currentUser.name}! You have ${requirements.length || '...'} system(s) assigned.`;
+  loadDashboard();
+}
+
+function doLogout() {
+  currentUser = null; requirements = []; compliance = [];
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app-screen').style.display   = 'none';
+  document.getElementById('login-id').value   = '';
+  document.getElementById('login-pass').value = '';
+}
+
+// ════════════════════════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════════════════════════
+async function loadDashboard() {
+  showLoader('Loading your systems...');
+  try {
+    const resp = await apiFetch('getDashboard', { userId: currentUser.userId });
+    hideLoader();
+    if (resp.success) {
+      requirements = resp.requirements;
+      compliance   = resp.compliance;
+      renderDashboard();
+    } else {
+      showToast('Failed to load dashboard.', 'error');
+    }
+  } catch (e) { hideLoader(); showToast('Network error.', 'error'); }
+}
+
+function getSubmittedFolders(req) {
+  return compliance.filter(c =>
+    c['User ID'] === req['User ID'] &&
+    c['Machine Name/Server'] === req['Machine Name/Server']
+  );
+}
+
+function getRequiredFolders(req) {
+  const folders = [];
+  ['Desktop Folder', 'Downloads folder', 'Documents folder', 'Email Inbox'].forEach(f => {
+    if (req[f] === 'Yes' || req[f] === 'yes') folders.push(f);
+  });
+  return folders;
+}
+
+function isMachineComplete(req) {
+  const required = getRequiredFolders(req);
+  const submitted = getSubmittedFolders(req).map(c => c['Folder']);
+  return required.every(f => submitted.includes(f));
+}
+
+function renderDashboard() {
+  const grid = document.getElementById('machine-grid');
+  grid.innerHTML = '';
+
+  if (!requirements.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>No systems assigned to you yet.</p></div>';
+    return;
+  }
+
+  const total   = requirements.length;
+  const done    = requirements.filter(r => isMachineComplete(r)).length;
+  const pending = total - done;
+
+  document.getElementById('stat-total').textContent   = total;
+  document.getElementById('stat-done').textContent    = done;
+  document.getElementById('stat-pending').textContent = pending;
+  document.getElementById('progress-bar').style.width = (total ? Math.round(done/total*100) : 0) + '%';
+  document.getElementById('welcome-msg').textContent  =
+    `Welcome, ${currentUser.name}! ${done} of ${total} system(s) completed.`;
+
+  requirements.forEach(req => {
+    const complete = isMachineComplete(req);
+    const required = getRequiredFolders(req);
+    const submitted = getSubmittedFolders(req).map(c => c['Folder']);
+    const type  = req['Type'] || 'Laptop';
+    const icon  = TYPE_ICON[type] || '💻';
+    const name  = req['Machine Name/Server'];
+
+    const folderChips = required.map(f => {
+      const cls = submitted.includes(f) ? 'submitted' : 'required';
+      const tick = submitted.includes(f) ? '✓ ' : '';
+      return `<span class="folder-chip ${cls}">${FOLDER_MAP[f]?.icon || '📂'} ${tick}${f}</span>`;
+    }).join('');
+
+    const actionHtml = complete
+      ? `<div class="completed-note">✅ All folders submitted — Compliance Complete</div>`
+      : `<button class="btn-comply" onclick="openModal(${requirements.indexOf(req)})">Upload Screenshots & Submit</button>`;
+
+    const card = document.createElement('div');
+    card.className = `machine-card ${complete ? 'completed' : ''}`;
+    card.innerHTML = `
+      <div class="machine-header">
+        <div class="machine-info">
+          <div class="machine-icon ${type.toLowerCase()}">${icon}</div>
+          <div>
+            <div class="machine-name">${name}</div>
+            <div class="machine-type">${type}</div>
+          </div>
+        </div>
+        <span class="badge ${complete ? 'done' : 'pending'}">${complete ? 'Done' : 'Pending'}</span>
+      </div>
+      <div class="machine-folders">${folderChips}</div>
+      <div class="machine-action">${actionHtml}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+// MODAL
+// ════════════════════════════════════════════════════════
+// uploads[folderName] = [File, File, ...]
+let uploads = {};
+
+function openModal(idx) {
+  currentMachine = requirements[idx];
+  uploads = {};
+
+  const required  = getRequiredFolders(currentMachine);
+  const submitted = getSubmittedFolders(currentMachine);
+  const subMap    = {};
+  submitted.forEach(s => {
+    if (!subMap[s['Folder']]) subMap[s['Folder']] = [];
+    subMap[s['Folder']].push({ link: s['File Link'], name: s['File Name'] || 'Screenshot' });
+  });
+
+  document.getElementById('modal-title').textContent = currentMachine['Machine Name/Server'];
+  document.getElementById('modal-meta').textContent  =
+    `${currentMachine['Type']} · ${currentMachine['Emp Name']}`;
+
+  let bodyHtml = '';
+  required.forEach(folder => {
+    const alreadySubmitted = subMap[folder] || [];
+    const prevHtml = alreadySubmitted.length
+      ? `<div class="submitted-files">${alreadySubmitted.map(f =>
+          `<div class="submitted-file">✓ <a href="${f.link}" target="_blank">${f.name}</a></div>`
+        ).join('')}</div>`
+      : '';
+
+    bodyHtml += `
+      <div class="folder-section" id="fs-${folder.replace(/\s/g,'-')}">
+        <div class="folder-section-title">
+          <span class="icon">${FOLDER_MAP[folder]?.icon || '📂'}</span>
+          ${folder}
+          ${alreadySubmitted.length ? '<span class="badge done" style="margin-left:auto">Already Submitted</span>' : ''}
+        </div>
+        ${prevHtml}
+        <div class="upload-zone" id="zone-${folder.replace(/\s/g,'-')}"
+             ondragover="event.preventDefault();this.classList.add('dragover')"
+             ondragleave="this.classList.remove('dragover')"
+             ondrop="handleDrop(event,'${folder}')">
+          <input type="file" accept="image/*" multiple
+                 onchange="handleFiles(event,'${folder}')"/>
+          <div class="upload-icon">📸</div>
+          <div class="upload-text">
+            <strong>Click or drag</strong> to upload screenshots<br>
+            <span style="font-size:11px">PNG, JPG, JPEG supported · Multiple allowed</span>
+          </div>
+        </div>
+        <div class="preview-list" id="preview-${folder.replace(/\s/g,'-')}"></div>
+      </div>
+    `;
+  });
+
+  document.getElementById('modal-body').innerHTML = bodyHtml;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('btn-submit').disabled = false;
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  currentMachine = null; uploads = {};
+}
+
+function handleFiles(event, folder) {
+  const files = Array.from(event.target.files);
+  addFiles(folder, files);
+}
+function handleDrop(event, folder) {
+  event.preventDefault();
+  document.getElementById('zone-' + folder.replace(/\s/g,'-')).classList.remove('dragover');
+  const files = Array.from(event.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  addFiles(folder, files);
+}
+
+function addFiles(folder, files) {
+  if (!uploads[folder]) uploads[folder] = [];
+  uploads[folder].push(...files);
+  renderPreviews(folder);
+}
+
+function removeFile(folder, idx) {
+  uploads[folder].splice(idx, 1);
+  renderPreviews(folder);
+}
+
+function renderPreviews(folder) {
+  const key = folder.replace(/\s/g,'-');
+  const list = document.getElementById('preview-' + key);
+  list.innerHTML = '';
+  (uploads[folder] || []).forEach((file, i) => {
+    const url  = URL.createObjectURL(file);
+    const div  = document.createElement('div');
+    div.className = 'preview-thumb';
+    div.innerHTML = `
+      <img src="${url}" alt="${file.name}"/>
+      <button class="remove-btn" onclick="removeFile('${folder}',${i})">✕</button>
+    `;
+    list.appendChild(div);
+  });
+}
+
+// ════════════════════════════════════════════════════════
+// SUBMIT COMPLIANCE
+// ════════════════════════════════════════════════════════
+async function submitCompliance() {
+  const req     = currentMachine;
+  const required = getRequiredFolders(req);
+  const submitted = getSubmittedFolders(req).map(c => c['Folder']);
+
+  // Check at least one new upload for each un-submitted required folder
+  const missingFolders = required.filter(f => {
+    const alreadyDone = submitted.includes(f);
+    const hasNewFiles = uploads[f] && uploads[f].length > 0;
+    return !alreadyDone && !hasNewFiles;
+  });
+
+  if (missingFolders.length > 0) {
+    showToast(`Please upload screenshots for: ${missingFolders.join(', ')}`, 'error');
+    return;
+  }
+
+  document.getElementById('btn-submit').disabled = true;
+  showLoader('Uploading screenshots to Google Drive...');
+
+  try {
+    const entries = [];
+
+    for (const folder of required) {
+      if (submitted.includes(folder)) continue; // skip already done
+      const files = uploads[folder] || [];
+
+      for (const file of files) {
+        const base64 = await toBase64(file);
+        entries.push({
+          userId:    req['User ID'],
+          empId:     req['Emp ID'],
+          empName:   req['Emp Name'],
+          type:      req['Type'],
+          machine:   req['Machine Name/Server'],
+          folder:    folder,
+          fileName:  file.name,
+          mimeType:  file.type,
+          fileData:  base64
+        });
+      }
+    }
+
+    const resp = await apiFetch('submitCompliance', { entries });
+    hideLoader();
+
+    if (resp.success) {
+      showToast('Compliance submitted successfully!', 'success');
+      closeModal();
+      // Refresh
+      await loadDashboard();
+    } else {
+      showToast(resp.message || 'Submission failed.', 'error');
+      document.getElementById('btn-submit').disabled = false;
+    }
+  } catch (e) {
+    hideLoader();
+    showToast('Upload error. Please try again.', 'error');
+    document.getElementById('btn-submit').disabled = false;
+  }
+}
+
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload  = () => resolve(reader.result.split(',')[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+</script>
+</body>
+</html>
