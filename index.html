@@ -841,7 +841,7 @@
       border: 1px solid var(--border-strong);
       border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 640px;
+      max-width: 680px;
       box-shadow: var(--shadow-lg);
       overflow: hidden;
       display: flex;
@@ -932,6 +932,107 @@
       color: var(--text-dim);
     }
     .file-input-hidden { display: none; }
+
+    /* COMPLIANCE ATTESTATION & UNDERTAKING */
+    .compliance-attestation-card {
+      background: var(--navy-950);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+      margin-top: 18px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+    .attestation-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 12px;
+    }
+    .attestation-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .attestation-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      font-size: 12px;
+      line-height: 1.48;
+      color: var(--text-muted);
+    }
+    .attestation-item strong {
+      color: #fff;
+    }
+    .attestation-num {
+      color: var(--accent-emerald);
+      font-weight: 700;
+      font-size: 11.5px;
+      flex-shrink: 0;
+      background: rgba(0, 212, 168, 0.12);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .attestation-stamp {
+      background: rgba(46, 117, 238, 0.08);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 9px 13px;
+      font-size: 11px;
+      color: var(--blue-400);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .attestation-agree-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--navy-850);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.25s ease;
+    }
+    .attestation-agree-box:hover {
+      border-color: var(--blue-400);
+      background: rgba(29, 99, 216, 0.12);
+    }
+    .attestation-agree-box.checked {
+      border-color: var(--accent-emerald);
+      background: rgba(0, 212, 168, 0.08);
+    }
+    .attestation-agree-box input[type="checkbox"] {
+      width: 19px;
+      height: 19px;
+      accent-color: var(--accent-emerald);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .attest-label-text {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.4;
+    }
+    .btn-locked {
+      opacity: 0.5 !important;
+      cursor: not-allowed !important;
+      filter: grayscale(0.4);
+    }
 
     /* TOAST */
     #toast-container {
@@ -1386,6 +1487,56 @@
 
         <div id="upload-slots-container">
           <!-- Populated per machine folders -->
+        </div>
+
+                <!-- COMPLIANCE DECLARATION & FORMAL ATTESTATION UNDERTAKING -->
+        <div class="compliance-attestation-card" id="compliance-attestation-card">
+          <div class="attestation-header">
+            <span style="font-size:20px;">🛡️</span>
+            <div style="flex:1;">
+              <div style="font-weight:700; color:#fff; font-size:13.5px;">Employee IT Compliance & Clean-Desk Undertaking</div>
+              <div style="font-size:11px; color:var(--text-dim);">Mandatory Corporate Attestation under Gretex Information Security Policy</div>
+            </div>
+            <span class="badge-subtle active" style="font-size:10px; text-transform:uppercase; letter-spacing:0.5px;">Legally Binding</span>
+          </div>
+
+          <div class="attestation-list">
+            <div class="attestation-item">
+              <span class="attestation-num">1</span>
+              <div><strong>Hardware & System Authenticity:</strong> I solemnly certify that all uploaded screenshot proofs have been captured directly from this designated system (<span id="attest-machine-name" style="font-family:'JetBrains Mono'; color:#fff; font-weight:700;">-</span>) and accurately represent its genuine local configuration.</div>
+            </div>
+            <div class="attestation-item">
+              <span class="attestation-num">2</span>
+              <div><strong>Real-Time Recency & Integrity:</strong> I confirm that these screenshots are current, authentic, captured live during the active audit cycle (<span id="attest-cycle-name" style="color:var(--accent-emerald); font-weight:600;">-</span>), and contain zero recycled, pre-dated, or manipulated artifacts.</div>
+            </div>
+            <div class="attestation-item">
+              <span class="attestation-num">3</span>
+              <div><strong>Clean-Desk & Non-Restoration Undertaking:</strong> I explicitly undertake that I will <u>NOT</u> restore, transfer, copy, or maintain any confidential files, customer records, or restricted data back to Desktop, Documents, or Downloads folders following this audit.</div>
+            </div>
+            <div class="attestation-item">
+              <span class="attestation-num">4</span>
+              <div><strong>Approved Enterprise Storage Mandate:</strong> I affirm that all official business records and client deliverables are stored exclusively within authorized enterprise cloud repositories and not stored unmonitored on local disks.</div>
+            </div>
+            <div class="attestation-item">
+              <span class="attestation-num">5</span>
+              <div><strong>Endpoint Security Safeguards:</strong> I verify that corporate endpoint protection, active antivirus shielding, and operating system safeguards remain running and unmodified on this workstation.</div>
+            </div>
+            <div class="attestation-item">
+              <span class="attestation-num">6</span>
+              <div><strong>Disciplinary & Audit Binding:</strong> I acknowledge that submitting false, staged, or borrowed compliance evidence constitutes a critical violation of IT Security Policy and is subject to immediate disciplinary escalation.</div>
+            </div>
+          </div>
+
+          <div class="attestation-stamp" id="attestation-stamp">
+            <!-- Populated dynamically with signee details -->
+          </div>
+
+          <label class="attestation-agree-box" id="attestation-agree-box">
+            <input type="checkbox" id="chk-attest-agree" onchange="toggleAttestationAgreement(this.checked)"/>
+            <span class="attest-label-text">
+              I have read, understood, and solemnly accept all IT security compliance undertakings stated above.
+            </span>
+          </label>
         </div>
 
         <div id="upload-progress-box" style="display:none; margin-top:16px; background:var(--navy-950); padding:14px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle);">
@@ -2324,9 +2475,12 @@ function renderEmployeeHistory() {
       <td style="color:var(--text-muted); font-size:12px; white-space:nowrap;">${formatDisplayTimestamp(item['Added at'])}</td>
       <td>${linkHtml}</td>
       <td>
-        <span class="badge-subtle ${isApproved ? 'active' : 'inactive'}">
-          ${isApproved ? 'Approved' : 'Pending Review'}
-        </span>
+        <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-start;">
+          <span class="badge-subtle ${isApproved ? 'active' : 'inactive'}">
+            ${isApproved ? 'Approved' : 'Pending Review'}
+          </span>
+          <span style="font-size:10.5px; color:var(--accent-emerald); font-weight:600;">🛡️ Attested</span>
+        </div>
       </td>
     `;
     tbody.appendChild(tr);
@@ -2341,9 +2495,35 @@ function openUploadModal(machine, type) {
   uploadQueue = {};
 
   const targetCycle = currentCycle === 'ALL' ? 'November 2026' : currentCycle;
-  document.getElementById('modal-upload-machine-title').textContent = `Upload Proofs for ${machine}`;
+  document.getElementById('modal-upload-machine-title').textContent = `Submit Compliance Proofs for ${machine}`;
   document.getElementById('modal-upload-machine-sub').textContent = `Cycle: ${targetCycle} | Device Type: ${type}`;
   document.getElementById('upload-progress-box').style.display = 'none';
+
+  // Reset Attestation State
+  const chkAgree = document.getElementById('chk-attest-agree');
+  if (chkAgree) chkAgree.checked = false;
+  const agreeBox = document.getElementById('attestation-agree-box');
+  if (agreeBox) agreeBox.classList.remove('checked');
+
+  // Populate Attestation Metadata
+  const attestMachEl = document.getElementById('attest-machine-name');
+  if (attestMachEl) attestMachEl.textContent = machine;
+  const attestCycleEl = document.getElementById('attest-cycle-name');
+  if (attestCycleEl) attestCycleEl.textContent = targetCycle;
+
+  const nowStamp = formatDisplayTimestamp(new Date().toISOString());
+  const attestStampEl = document.getElementById('attestation-stamp');
+  if (attestStampEl) {
+    attestStampEl.innerHTML = `🛡️ <strong>Attestation Signee:</strong> ${currentUser.name} (${currentUser.userId || currentUser.empId}) &nbsp;|&nbsp; <strong>Host:</strong> ${machine} &nbsp;|&nbsp; <strong>Timestamp:</strong> ${nowStamp}`;
+  }
+
+  // Lock Submit Button initially until user agrees
+  const btnSubmit = document.getElementById('btn-confirm-upload');
+  if (btnSubmit) {
+    btnSubmit.disabled = true;
+    btnSubmit.classList.add('btn-locked');
+    btnSubmit.innerHTML = '<span>🔒 Confirm & Submit Proofs (Attestation Required)</span>';
+  }
 
   const myReq = getMyRequirements().find(r => (r['Machine Name/Server'] || '').trim().toLowerCase() === machine.toLowerCase());
   const container = document.getElementById('upload-slots-container');
@@ -2376,6 +2556,27 @@ function openUploadModal(machine, type) {
   });
 
   document.getElementById('modal-upload').style.display = 'flex';
+}
+
+function toggleAttestationAgreement(isAgreed) {
+  const agreeBox = document.getElementById('attestation-agree-box');
+  const btnSubmit = document.getElementById('btn-confirm-upload');
+  if (agreeBox) {
+    if (isAgreed) agreeBox.classList.add('checked');
+    else agreeBox.classList.remove('checked');
+  }
+
+  if (btnSubmit) {
+    if (isAgreed) {
+      btnSubmit.disabled = false;
+      btnSubmit.classList.remove('btn-locked');
+      btnSubmit.innerHTML = '<span>✅ Confirm & Submit Verified Proofs</span>';
+    } else {
+      btnSubmit.disabled = true;
+      btnSubmit.classList.add('btn-locked');
+      btnSubmit.innerHTML = '<span>🔒 Confirm & Submit Proofs (Attestation Required)</span>';
+    }
+  }
 }
 
 function closeUploadModal() {
@@ -2428,7 +2629,18 @@ function compressImage(src, maxWidth, quality, callback) {
 async function executeUploadSubmissions() {
   const folders = Object.keys(uploadQueue);
   if (!folders.length) {
-    alert('Please choose at least one screenshot file to upload.');
+    showToast('Please choose at least one screenshot file to upload.', 'warning');
+    return;
+  }
+
+  const chkAgree = document.getElementById('chk-attest-agree');
+  if (!chkAgree || !chkAgree.checked) {
+    showToast('Mandatory IT Compliance Undertaking must be accepted before submitting.', 'warning');
+    const agreeBox = document.getElementById('attestation-agree-box');
+    if (agreeBox) {
+      agreeBox.style.borderColor = 'var(--danger)';
+      setTimeout(() => { agreeBox.style.borderColor = ''; }, 2000);
+    }
     return;
   }
 
@@ -2438,6 +2650,7 @@ async function executeUploadSubmissions() {
   progressBox.style.display = 'block';
 
   const uploadCycle = currentCycle === 'ALL' ? 'November 2026' : currentCycle;
+  const nowStamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
 
   const entries = folders.map(f => ({
     userId: currentUser.userId,
@@ -2448,11 +2661,14 @@ async function executeUploadSubmissions() {
     folder: f,
     fileName: uploadQueue[f].fileName,
     mimeType: uploadQueue[f].mimeType,
-    fileData: uploadQueue[f].fileData
+    fileData: uploadQueue[f].fileData,
+    attested: 'Yes',
+    attestedBy: currentUser.name,
+    attestedAt: nowStamp
   }));
 
   progressBar.style.width = '35%';
-  progressText.textContent = `Uploading ${entries.length} file(s) to Compliance Database...`;
+  progressText.textContent = `Uploading ${entries.length} verified file(s) to Compliance Database...`;
 
   try {
     const resp = await apiFetch('submitCompliance', {
@@ -2463,7 +2679,6 @@ async function executeUploadSubmissions() {
     progressBar.style.width = '85%';
 
     // Update local database
-    const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
     entries.forEach(e => {
       localDb.compliance.push({
         'User ID': e.userId,
@@ -2475,12 +2690,15 @@ async function executeUploadSubmissions() {
         'Folder Link': 'https://drive.google.com',
         'File Link': 'https://drive.google.com',
         'File Name': e.fileName,
-        'Added at': now,
+        'Added at': nowStamp,
         'Added by UserID': e.userId,
         'Added by Emp ID': e.empId,
         'Added by Emp Name': e.empName,
         'Checked Status': 'Pending Review',
-        'Cycle': uploadCycle
+        'Cycle': uploadCycle,
+        'Attested': 'Yes',
+        'Attested By': currentUser.name,
+        'Attested At': nowStamp
       });
     });
 
@@ -2496,15 +2714,15 @@ async function executeUploadSubmissions() {
 
     saveLocalDb();
     progressBar.style.width = '100%';
-    progressText.textContent = 'Upload complete! Syncing status...';
+    progressText.textContent = 'Upload complete! Attestation securely logged.';
 
     setTimeout(() => {
       closeUploadModal();
       renderEmployeeDashboard();
       renderEmployeeHistory();
-      showToast(`Compliance proofs uploaded successfully for ${uploadCycle}!`, 'success');
+      showToast(`Compliance proofs & IT Security Attestation submitted for ${uploadCycle}!`, 'success');
       syncWithBackend(false);
-    }, 400);
+    }, 450);
 
   } catch (err) {
     console.warn('Online upload failed, updating locally:', err);
@@ -2512,7 +2730,7 @@ async function executeUploadSubmissions() {
     closeUploadModal();
     renderEmployeeDashboard();
     renderEmployeeHistory();
-    showToast('Saved offline. Data will sync once network is available.', 'info');
+    showToast('Saved offline with Attestation. Data will sync once network is available.', 'info');
   }
 }
 
@@ -2673,9 +2891,12 @@ function renderAdminAuditTable() {
       </td>
       <td style="font-size:12px; color:var(--text-muted); white-space:nowrap;">${formatDisplayTimestamp(sub['Added at'])}</td>
       <td>
-        <span class="badge-subtle ${isApproved ? 'active' : 'inactive'}">
-          ${status}
-        </span>
+        <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-start;">
+          <span class="badge-subtle ${isApproved ? 'active' : 'inactive'}">
+            ${status}
+          </span>
+          <span style="font-size:10.5px; color:var(--accent-emerald); font-weight:600;">🛡️ Attested</span>
+        </div>
       </td>
       <td>
         <div style="display:flex; gap:6px;">
