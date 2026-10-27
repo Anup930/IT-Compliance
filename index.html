@@ -1104,7 +1104,7 @@
         </nav>
 
         <div class="sidebar-footer">
-          <button class="btn-sidebar-footer" id="btn-sidebar-sync" onclick="triggerManualSync()" title="Refresh latest data directly from Google Sheets">
+          <button class="btn-sidebar-footer" id="btn-sidebar-sync" onclick="triggerManualSync()" title="Refresh latest data directly from Database">
             <span id="sidebar-sync-icon">🔄</span> Sync Data
           </button>
           <button class="btn-sidebar-footer btn-sidebar-logout" onclick="doLogout()">
@@ -1122,7 +1122,7 @@
 
           <div class="topbar-right">
             <!-- Sync Indicator -->
-            <div class="sync-status-indicator" id="sync-status-indicator" title="Synchronization state with Google Sheets">
+            <div class="sync-status-indicator" id="sync-status-indicator" title="Synchronization state with Database">
               🟢 Live Synced
             </div>
 
@@ -1140,8 +1140,8 @@
               </select>
             </div>
 
-            <button class="btn-sync-top" onclick="triggerManualSync()" title="Click to fetch live updates from Google Sheets">
-              <span id="top-sync-icon">🔄</span> Sync Sheet
+            <button class="btn-sync-top" onclick="triggerManualSync()" title="Click to fetch live updates from Database">
+              <span id="top-sync-icon">🔄</span> Sync Database
             </button>
 
             <!-- Admin Mode Toggle for quick switching -->
@@ -1331,7 +1331,7 @@
             <div class="section-header">
               <div>
                 <div class="section-title">Compliance Evidence Audit & Screenshot Verification</div>
-                <div class="section-desc">Review uploaded Google Drive screenshot proofs and mark compliance approvals.</div>
+                <div class="section-desc">Review uploaded compliance screenshot proofs and mark compliance approvals.</div>
               </div>
               <div class="kpi-subtext" id="audit-stats-caption">Reviewing proofs for selected cycle</div>
             </div>
@@ -1348,7 +1348,7 @@
                     <th>Employee Name</th>
                     <th>Machine Name</th>
                     <th>Folder</th>
-                    <th>Drive Link</th>
+                    <th>Proof Link</th>
                     <th>Uploaded At</th>
                     <th>Review Status</th>
                     <th>Action</th>
@@ -1381,7 +1381,7 @@
 
       <div class="modal-body">
         <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:18px;">
-          Attach clean-desk screenshots for each required folder on this machine. Files will be uploaded to the Gretex Compliance Google Drive repository.
+          Attach clean-desk screenshots for each required folder on this machine. Files will be securely uploaded to the Compliance Database repository.
         </p>
 
         <div id="upload-slots-container">
@@ -1389,7 +1389,7 @@
         </div>
 
         <div id="upload-progress-box" style="display:none; margin-top:16px; background:var(--navy-950); padding:14px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle);">
-          <div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;" id="upload-progress-text">Uploading to Google Drive...</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;" id="upload-progress-text">Uploading to Secure Database...</div>
           <div style="height:6px; background:var(--navy-800); border-radius:3px; overflow:hidden;">
             <div id="upload-progress-bar" style="height:100%; width:0%; background:linear-gradient(90deg, var(--blue-500), var(--accent-emerald)); transition:width 0.2s;"></div>
           </div>
@@ -1399,7 +1399,7 @@
       <div class="modal-footer">
         <button class="btn-secondary" onclick="closeUploadModal()">Cancel</button>
         <button class="btn-primary" id="btn-confirm-upload" style="width:auto; padding:10px 22px;" onclick="executeUploadSubmissions()">
-          <span>Confirm & Submit to Drive</span>
+          <span>Confirm & Submit Proofs</span>
         </button>
       </div>
     </div>
@@ -1691,7 +1691,7 @@ async function doLogin() {
   }
 
   hideLoginError();
-  showLoader('Verifying credentials with Google Sheets...');
+  showLoader('Verifying credentials with Database...');
 
   // 1. Call Live Google Apps Script API to verify credentials & fetch fresh user role
   try {
@@ -1704,10 +1704,10 @@ async function doLogin() {
       localStorage.setItem(STORAGE_SESSION, JSON.stringify({ user: currentUser, timestamp: Date.now() }));
       enterApplication();
 
-      // Immediately fetch fresh compliance and systems data directly from Google Sheets
+      // Immediately fetch fresh compliance and systems data directly from Database
       await syncWithBackend(false);
       hideLoader();
-      showToast(`Welcome back, ${currentUser.name}! Updated with Google Sheets.`, 'success');
+      showToast(`Welcome back, ${currentUser.name}! Connected to Database.`, 'success');
       return;
     } else if (resp && !resp.success && !resp.networkError) {
       hideLoader();
@@ -1752,10 +1752,10 @@ async function doLogin() {
 }
 
 // ══════════════════════════════════════════════════════════════
-// LIVE SYNC ENGINE (REFRESHES DATA DIRECTLY FROM GOOGLE SHEETS)
+// LIVE SYNC ENGINE (REFRESHES DATA DIRECTLY FROM DATABASE)
 // ══════════════════════════════════════════════════════════════
 async function syncWithBackend(showToastMsg = true) {
-  if (showToastMsg) showLoader('Syncing live data from Google Sheets...');
+  if (showToastMsg) showLoader('Syncing live data from Database...');
   
   // Set UI Indicator to Syncing
   const syncStatusEl = document.getElementById('sync-status-indicator');
@@ -1882,11 +1882,11 @@ async function syncWithBackend(showToastMsg = true) {
     const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
     if (syncStatusEl) {
       syncStatusEl.innerHTML = `🟢 Live Synced: ${nowTime}`;
-      syncStatusEl.title = 'Synchronized with Google Sheets';
+      syncStatusEl.title = 'Synchronized with Database';
     }
 
     if (showToastMsg) {
-      showToast('Successfully synced with Google Sheets!', 'success');
+      showToast('Successfully synced with Database!', 'success');
     }
   } catch (err) {
     if (showToastMsg) hideLoader();
@@ -1900,7 +1900,7 @@ async function syncWithBackend(showToastMsg = true) {
       syncStatusEl.title = 'Offline: Showing local cached data';
     }
     if (showToastMsg) {
-      showToast('Offline / Could not reach Google Sheets. Showing cached data.', 'info');
+      showToast('Offline / Could not reach Database. Showing cached data.', 'info');
     }
   } finally {
     if (topIcon) topIcon.classList.remove('spin');
@@ -2312,7 +2312,7 @@ function renderEmployeeHistory() {
     const tr = document.createElement('tr');
     const cycle = getRecordCycle(item);
     const link = item['File Link'] || item['Folder Link'] || '';
-    const linkHtml = link ? `<a href="${link}" target="_blank" rel="noopener">View in Drive ↗</a>` : '<span style="color:var(--text-dim)">No Link</span>';
+    const linkHtml = link ? `<a href="${link}" target="_blank" rel="noopener">View Proof ↗</a>` : '<span style="color:var(--text-dim)">No Link</span>';
     const status = (item['Checked Status'] || 'Pending Review').trim();
     const isApproved = status.toLowerCase() === 'completed' || status.toLowerCase() === 'approved';
 
@@ -2452,7 +2452,7 @@ async function executeUploadSubmissions() {
   }));
 
   progressBar.style.width = '35%';
-  progressText.textContent = `Uploading ${entries.length} file(s) to Gretex Drive repository...`;
+  progressText.textContent = `Uploading ${entries.length} file(s) to Compliance Database...`;
 
   try {
     const resp = await apiFetch('submitCompliance', {
@@ -2779,10 +2779,10 @@ async function saveUserRecord() {
   renderAdminUsersTable();
   renderAdminOverview();
 
-  showToast(`Saving user ${name} to Google Sheets...`, 'info');
+  showToast(`Saving user ${name} to Database...`, 'info');
   try {
     await apiFetch('adminSaveUser', { user: userData });
-    showToast(`User ${name} saved successfully in Google Sheet!`, 'success');
+    showToast(`User ${name} saved successfully in Database!`, 'success');
     syncWithBackend(false);
   } catch (e) {
     console.warn('Backend user save offline:', e);
@@ -2802,7 +2802,7 @@ async function toggleUserStatus(userId, newStatus) {
   showToast(`Updating status of ${userId} to ${newStatus}...`, 'info');
   try {
     await apiFetch('adminToggleUserStatus', { userId, status: newStatus });
-    showToast(`Status updated in Google Sheet.`, 'success');
+    showToast(`Status updated in Database.`, 'success');
   } catch (e) {
     console.warn('Status toggle error:', e);
   }
